@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Sample SAM Template for DotNetCoreLambdaPlayground
+
+Globals:
+  Function:
+    Timeout: 10
+
+Resources:
+  DotNetCoreLambdaPlaygroundFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: DotNetCoreLambdaPlayground
+      CodeUri: src/DotNetCoreLambdaPlayground/bin/Release/netcoreapp2.1/publish
+      Handler: DotNetCoreLambdaPlayground::DotNetCoreLambdaPlayground.Functions::Get
+      Runtime: dotnetcore2.1
+      Environment:
+        Variables:
+          PARAM1: VALUE
+
+      Events:
+        DotNetCoreLambdaPlayground:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+
+Outputs:
+  DotNetCoreLambdaPlaygroundApi:
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/DotNetCoreLambdaPlayground/"
+
+  DotNetCoreLambdaPlaygroundFunction:
+    Value: !GetAtt DotNetCoreLambdaPlaygroundFunction.Arn
+
+  DotNetCoreLambdaPlaygroundFunctionIamRole:
+    Value: !GetAtt DotNetCoreLambdaPlaygroundFunctionRole.Arn
